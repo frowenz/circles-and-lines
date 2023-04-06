@@ -4,7 +4,7 @@ Press R to regenerate.
 
 Inspired by this piece, Eye Candy, by Bruce Gray:
 
-![Eye Candy](eye_candy.jpg?width=250)
+![Eye Candy](eye_candy.jpg?width=100)
 
 and by [36 Points](https://www.sagejenson.com/36points) by Sage Jensen.
 
