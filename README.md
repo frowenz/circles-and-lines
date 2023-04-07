@@ -1,4 +1,6 @@
-# circles-and-lines
+# [circles-and-lines](https://frowenz.github.io/circles-and-lines)
+
+Press R to regenerate.
 
 Controls: 
 - 'S' toggles modules panel 
@@ -7,6 +9,8 @@ Controls:
 
 Inspired by this piece, Eye Candy, by Bruce Gray:
 
-![Eye Candy](eye_candy.jpg)
+<img src="eye_candy.jpg" alt="Eye Candy" width="400"/>
 
-Check it out live [here](https://frowenz.github.io/circles-and-lines).
+and by [36 Points](https://www.sagejenson.com/36points) by Sage Jensen.
+
+
