@@ -1,8 +1,21 @@
-
-const svg = document.getElementById('mySVG');
-const ε = 10;
+const foreground = document.getElementById('foreground');
+const background = document.getElementById('background');
+const ε = 5;
 var circles = [];
-let rotation = 0;
+var lines = [];
+var regions = [];
+
+function clearAll() {
+    circles = [];
+    lines = [];
+    regions = [];
+    while (foreground.firstChild) {
+        foreground.removeChild(foreground.firstChild);
+    }
+    while (background.firstChild) {
+        background.removeChild(background.firstChild);
+    }
+}
 
 function createLine() {
     const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
@@ -12,19 +25,19 @@ function createLine() {
 
     if (Math.random() < Math.min(ratio, 1 / ratio)) {
         x1 = getRandom(0, width)
-        y1 = 0 - ε
+        y1 = 0 - 50
     }
     else {
-        x1 = 0 - ε
+        x1 = 0 - 50
         y1 = getRandom(0, height)
     }
 
     if (Math.random() < Math.min(ratio, 1 / ratio)) {
         x2 = getRandom(0, width)
-        y2 = height + ε
+        y2 = height + 50
     }
     else {
-        x2 = width + ε
+        x2 = width + 50
         y2 = getRandom(0, height)
     }
 
@@ -39,7 +52,8 @@ function createLine() {
     else {
         line.setAttribute('stroke', 'black');
     }
-    svg.appendChild(line);
+    background.appendChild(line);
+    lines.push(line);
 }
 
 function createPath() {
@@ -80,12 +94,11 @@ function createPath() {
 
     // Create triangle path
     path.setAttribute('d', `M ${x1}, ${y1} L ${x2}, ${y2} L ${corner1} L ${corner2} Z`);
-
     path.setAttribute('style', "mix-blend-mode: difference;");
     path.setAttribute('filter', "url(#invert)");
-    svg.appendChild(path);
+    background.appendChild(path);
+    regions.push(path);
 }
-
 
 function getRandom(min, max) {
     return Math.random() * (max - min) + min;
@@ -112,8 +125,8 @@ function createCircles(cx_initial, cy_initial) {
         else if (Math.random() < 0.25) {
             {
                 const numrings = getRandom(4, 8)
-                if (r > 600 && Math.random() < 1) {
-                    for (let j = 2; j < numrings; j++) {
+                if (r > 500 && Math.random() < 1) {
+                    for (let j = 1; j < numrings; j++) {
                         circles.push(createCircle(cx, cy, (r / (2 ** j)), dx, dy));
                     }
                 }
@@ -174,9 +187,6 @@ function createCircle(cx, cy, r, dx, dy) {
                 break;
         }
     }
-    else {
-        // console.log (cx)
-    }
 
     if (typeof dx === 'undefined') {
         dx = getRandom(-1, 1);
@@ -188,14 +198,18 @@ function createCircle(cx, cy, r, dx, dy) {
     circle.setAttribute('r', r);
 
     if (Math.random() < 0.9) {
-        circle.setAttribute('fill', 'black');
         circle.setAttribute('style', "mix-blend-mode: difference;");
         circle.setAttribute('filter', "url(#invert)");
-    } else {
-        circle.setAttribute('fill', 'white');
     }
 
-    svg.appendChild(circle);
+    if (Math.random() < 0.5) {
+        circle.setAttribute('fill', 'white');
+    }
+    else {
+        circle.setAttribute('fill', 'black');
+    }
+
+    foreground.appendChild(circle);
     return { circle, cx, cy, r, dx, dy }
 }
 
@@ -209,7 +223,7 @@ function updateCircles() {
         const cy = parseFloat(circle.getAttribute('cy')) + dy;
 
         if (cx < -r || cx > width + r || cy < -r || cy > height + r) {
-            svg.removeChild(circle);
+            foreground.removeChild(circle);
             circles.splice(i, 1);
             createCircles();
         } else {
@@ -219,11 +233,10 @@ function updateCircles() {
     }
 }
 
-let lastUpdateTime = performance.now();
 function animate(time) {
     const deltaTime = time - lastUpdateTime;
 
-    if (deltaTime >= 1000 / 30) { // 30 FPS
+    if (deltaTime >= 1000 / 20) { // 30 FPS
         updateCircles();
         lastUpdateTime = time;
     }
@@ -231,22 +244,60 @@ function animate(time) {
     requestAnimationFrame(animate);
 }
 
-for (let i = 0; i < getRandom(1, 3); i++) {
-    if (Math.random() < 0.5) {
-        createPath();
+// clearAll();
+
+var lastUpdateTime = performance.now();
+var numRegions
+var numLines
+var numCircles
+var width
+var height
+function init() {
+    lastUpdateTime = performance.now();
+    if (numRegions == undefined && numLines == undefined) {
+        console.log ("here")
+        numRegions = 0
+        numLines = 0
+        for (let i = 0; i < getRandom(1, 3); i++) {
+            if (Math.random() < 0.5) {
+                createPath();
+                numRegions += 1
+            }
+            else {
+                createLine();
+                numLines += 1
+            }
+        }
     }
     else {
-        createLine();
+        if (numRegions == undefined) {
+            numRegions = 0
+        }
+        if (numLines == undefined) {
+            numLines = 0
+        }
+
+        for (let i = 0; i < numRegions; i++) {
+            createPath();
+        }
+        for (let i = 0; i < numLines; i++) {
+            createLine();
+        }
+    }
+
+    if (numCircles == undefined) {
+        console.log ("here2")
+        numCircles = Math.floor(getRandom(10, 30))
+    }
+
+    width = window.innerWidth;
+    height = window.innerHeight;
+
+    while (circles.length < numCircles) {
+        let cx_initial = getRandom(0, width)
+        let cy_initial = getRandom(0, height)
+        createCircles(cx_initial, cy_initial)
     }
 }
-
-var numCircles = getRandom(10, 30)
-const width = window.innerWidth;
-const height = window.innerHeight;
-for (let i = 0; i < numCircles; i++) {
-    let cx_initial = getRandom(0, width)
-    let cy_initial = getRandom(0, height)
-    createCircles(cx_initial, cy_initial)
-}
-
+init();
 animate();
