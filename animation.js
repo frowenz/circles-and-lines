@@ -119,15 +119,15 @@ function createCircles(cx_initial, cy_initial) {
         if (r > 20 && Math.random() < 0.25) {
             circles.push(createCircle(cx, cy, (r / (1.05 + Math.random())), dx, dy));
         }
-        else if (r > 150 && Math.random() < 0.15) {
+        else if (r > 125 && Math.random() < 0.15) {
             circles.push(createCircle(cx, cy, (r / getRandom(3, 8)), dx, dy));
         }
-        else if (Math.random() < 0.25) {
+        else if (Math.random() < 0.20) {
             {
                 const numrings = getRandom(4, 8)
-                if (r > 500 && Math.random() < 1) {
+                if (r > 500) {
                     for (let j = 1; j < numrings; j++) {
-                        circles.push(createCircle(cx, cy, (r / (2 ** j)), dx, dy));
+                        circles.push(createCircle(cx, cy, (r / (2 ** j)), dx, dy, 1));
                     }
                 }
             }
@@ -135,7 +135,7 @@ function createCircles(cx_initial, cy_initial) {
     }
 }
 
-function createCircle(cx, cy, r, dx, dy) {
+function createCircle(cx, cy, r, dx, dy, mustInvert) {
     const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
 
     if (typeof r === 'undefined') {
@@ -197,16 +197,17 @@ function createCircle(cx, cy, r, dx, dy) {
     circle.setAttribute('cy', cy);
     circle.setAttribute('r', r);
 
-    if (Math.random() < 0.9) {
+    if (mustInvert || Math.random() < 0.9) {
         circle.setAttribute('style', "mix-blend-mode: difference;");
         circle.setAttribute('filter', "url(#invert)");
+        
     }
 
-    if (Math.random() < 0.5) {
-        circle.setAttribute('fill', 'white');
+    if (mustInvert || Math.random() < 0.5) {
+        circle.setAttribute('fill', 'black');
     }
     else {
-        circle.setAttribute('fill', 'black');
+        circle.setAttribute('fill', 'white');
     }
 
     foreground.appendChild(circle);
