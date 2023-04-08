@@ -255,10 +255,9 @@ var height
 function init() {
     lastUpdateTime = performance.now();
     if (numRegions == undefined && numLines == undefined) {
-        console.log ("here")
         numRegions = 0
         numLines = 0
-        for (let i = 0; i < getRandom(1, 3); i++) {
+        for (let i = 0; i < getRandom(1, 4); i++) {
             if (Math.random() < 0.5) {
                 createPath();
                 numRegions += 1
@@ -286,7 +285,6 @@ function init() {
     }
 
     if (numCircles == undefined) {
-        console.log ("here2")
         numCircles = Math.floor(getRandom(10, 30))
     }
 

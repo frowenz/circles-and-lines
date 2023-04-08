@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="favicon.png" type="image/x-icon">
-    <title> Circles; </title>
+    <title> Circles and Lines</title>
 </head>
 <style>
     body {
@@ -41,6 +41,14 @@
 
     .flex-item {
         margin: 5px;
+        display: flex;
+        align-items: center;
+    }
+
+    .line {
+        flex-grow: 1;
+        border-bottom: 1px solid #000;
+        margin-left: 10px;
     }
 
     .module-panel {
@@ -53,8 +61,20 @@
         padding: 10px;
         position: fixed;
         top: 0px;
-        left: calc(100dvw - 200px);
+        right: 0px;
         z-index: 1001;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        font-size: 15px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .flex-item label {
+        margin-right: 5px;
+    }
+
+    input[type="color"] {
+        margin-right: 7.5px;
+        height: 24px;
     }
 
     .hidden {
@@ -63,10 +83,14 @@
 
     input {
         float: right;
+        height: 20px;
     }
 
     input[type="number" i] {
-        width: 50px;
+        width: 39px;
+        padding: 0px;
+        padding-left: 5px;
+        margin-right: 10px;
     }
 
     .item {
@@ -76,39 +100,68 @@
         height: 200px;
         background-color: transparent;
     }
+
+    label {
+        /* width: 65px; */
+        width: fit-content;
+    }
+
+    button {
+        height: 24px;
+        width: 157px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        text-align: center;
+        border: 1px solid #7e7e7e;
+        color: #202223;
+        background: #ffffff;
+        border-radius: 3px;
+    }
+
+    button:hover {
+        background: #f6f6f7;
+        outline: 1px solid transparent;
+    }
 </style>
 </head>
 
 <body>
 
-    <div id="module-panel" class="module-panel hidden">
-
-        <button id="random-color-pair" class="flex-item">Roll Colors</button>
+    <div id="module-panel" class="module-panel">
+        <div class="flex-item">
+            <span style="font-size: 17px;"> Settings </span>
+            <span class="line"></span>
+        </div>
 
         <div class="flex-item">
-            <label for="color-white">Color 1:</label>
+            <label for="color-white">Colors:</label>
             <input type="color" id="color-white" name="color-white" value="#ffffff">
-        </div>
-
-        <div class="flex-item">
-            <label for="color-black">Color 2:</label>
             <input type="color" id="color-black" name="color-black" value="#000000">
+            <button style="margin-right: 0px;" id="random-color-pair">Random Colors</button>
         </div>
-
 
         <div class="flex-item">
             <label for="num-circles"> Circles:</label>
             <input type="number" id="num-circles" name="num-circles" min="0" max="100">
-        </div>
-
-        <div class="flex-item">
             <label for="num-lines">Lines:</label>
             <input type="number" id="num-lines" name="num-lines" min="0" max="20">
+            <label for="num-regions">Regions:</label>
+            <input style="margin-right: 0px" type="number" id="num-regions" name="num-regions" min="0" max="20">
+
         </div>
 
         <div class="flex-item">
-            <label for="num-regions">Regions:&nbsp;&nbsp;</label>
-            <input type="number" id="num-regions" name="num-regions" min="0" max="20">
+            <span style="font-size: 17px;"> Controls </span>
+            <span class="line"></span>
+        </div>
+
+        <div class="flex-item">
+            <span>'R': Regenerate with same settings </span>
+        </div>
+        <div class="flex-item">
+            <span>'T': Regenerate with new settings</span>
+        </div>
+        <div class="flex-item">
+            <span>'S': Toggle panel </span>
         </div>
 
     </div>
@@ -157,7 +210,6 @@
     // Listeners
     document.addEventListener('keydown', function (event) {
         if (event.key === 'r' || event.key === 'R') {
-            // location.reload();
             clearAll();
             init();
         }
@@ -168,6 +220,7 @@
             numRegions = undefined
             numLines = undefined
             numCircles = undefined
+            assignRandomColorPair();
             clearAll();
             init();
             numCirclesInput.value = numCircles;
