@@ -4,12 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="favicon.png" type="image/x-icon">
+    <link rel="icon" href="images/favicon.png" type="image/x-icon">
     <link rel="stylesheet" type="text/css" href="styling.css">
     <title> Circles and Lines</title>
 </head>
-<body>
 
+<body>
     <div id="module-panel" class="module-panel">
         <div class="flex-item">
             <span style="font-size: 17px;"> Controls </span>
@@ -17,15 +17,14 @@
         </div>
 
         <div class="flex-item">
-            <span>'R': Regenerate with same settings </span>
+            <span> Press 'r' to regenerate with the same settings </span>
         </div>
         <div class="flex-item">
-            <span>'T': Regenerate with new settings</span>
+            <span> Press 't' to regenerate with new settings</span>
         </div>
         <div class="flex-item">
-            <span>'S': Toggle panel </span>
+            <span>Press 's' to toggle this panel </span>
         </div>
-
 
         <div class="flex-item">
             <span style="font-size: 17px;"> Settings </span>
@@ -52,7 +51,7 @@
     </div>
 
     <svg>
-        <!-- Crazy workaround where the unregonized tags work as intended but defs doesn't -->
+        <!-- Crazy workaround where the unrecognized tag work as intended but defs doesn't -->
         <def>
             <filter id="color-swap" x="0" y="0" width="100%" height="100%">
                 <feComponentTransfer>
@@ -63,7 +62,6 @@
             </filter>
         </def>
     </svg>
-
 
     <div style="filter: url(#color-swap)">
         <div id="filter" class="filter-div">
@@ -86,225 +84,8 @@
             <div class="background"></div>
         </div>
     </div>
-
-
 </body>
-<script src="animation.js"></script>
-<script src="colors.js"></script>
-<script>
-    // Listeners
-    document.addEventListener('keydown', function (event) {
-        if (event.key === 'r' || event.key === 'R') {
-            clearAll();
-            init();
-        }
-    });
 
-    document.addEventListener('keydown', function (event) {
-        if (event.key === 't' || event.key === 'T') {
-            numRegions = undefined
-            numLines = undefined
-            numCircles = undefined
-            assignRandomColorPair();
-            clearAll();
-            init();
-            numCirclesInput.value = numCircles;
-            numLinesInput.value = numLines;
-            numRegionsInput.value = numRegions;
-        }
-    });
-
-
-    document.addEventListener("keydown", function (event) {
-        if (event.key === "s" || event.key === "S" || event.key === "Escape") {
-            toggleModulePanel();
-        }
-    });
-
-    function toggleModulePanel() {
-        const modulePanel = document.getElementById("module-panel");
-        modulePanel.classList.toggle("hidden");
-    }
-
-
-    function setFirstTableValue(element, newValue) {
-        var tableValues = element.getAttribute('tableValues').split(' ');
-        tableValues[0] = newValue.toFixed(20);
-        element.setAttribute('tableValues', tableValues.join(' '));
-    }
-
-    function setSecondTableValue(element, newValue) {
-        var tableValues = element.getAttribute('tableValues').split(' ');
-        tableValues[1] = newValue.toFixed(20);
-        element.setAttribute('tableValues', tableValues.join(' '));
-    }
-
-
-    document.getElementById("color-white").addEventListener("input", function () {
-        var feFuncR = document.querySelector('feFuncR');
-        var feFuncG = document.querySelector('feFuncG');
-        var feFuncB = document.querySelector('feFuncB');
-
-        var colorValue = this.value;
-
-        var redDecimal = hexToDecimal(colorValue.substring(1, 3));
-        var greenDecimal = hexToDecimal(colorValue.substring(3, 5));
-        var blueDecimal = hexToDecimal(colorValue.substring(5, 7));
-
-        var redTableValue = decimalToTableValues(redDecimal);
-        var greenTableValue = decimalToTableValues(greenDecimal);
-        var blueTableValue = decimalToTableValues(blueDecimal);
-
-        setFirstTableValue(feFuncR, redTableValue);
-        setFirstTableValue(feFuncG, greenTableValue);
-        setFirstTableValue(feFuncB, blueTableValue);
-    });
-
-    document.getElementById("color-black").addEventListener("input", function () {
-        var feFuncR = document.querySelector('feFuncR');
-        var feFuncG = document.querySelector('feFuncG');
-        var feFuncB = document.querySelector('feFuncB');
-
-        var colorValue = this.value;
-
-        var redDecimal = hexToDecimal(colorValue.substring(1, 3));
-        var greenDecimal = hexToDecimal(colorValue.substring(3, 5));
-        var blueDecimal = hexToDecimal(colorValue.substring(5, 7));
-
-        var redTableValue = decimalToTableValues(redDecimal);
-        var greenTableValue = decimalToTableValues(greenDecimal);
-        var blueTableValue = decimalToTableValues(blueDecimal);
-
-        setSecondTableValue(feFuncR, redTableValue);
-        setSecondTableValue(feFuncG, greenTableValue);
-        setSecondTableValue(feFuncB, blueTableValue);
-    });
-
-    function hexToDecimal(hex) {
-        return parseInt(hex.substring(0), 16);
-    }
-
-    function decimalToTableValues(decimal) {
-        return decimal / 255;
-    }
-
-    document.querySelector("body").addEventListener("click", function (event) {
-        const modulePanel = document.getElementById("module-panel");
-        const panelRect = modulePanel.getBoundingClientRect();
-
-        // Check if click is outside the panel
-        if (
-            event.clientX < panelRect.left ||
-            event.clientX > panelRect.right ||
-            event.clientY < panelRect.top ||
-            event.clientY > panelRect.bottom
-        ) {
-            // Hide the panel
-            modulePanel.classList.add("hidden");
-        }
-        modulePanel.addEventListener("click", function (event) {
-            event.stopPropagation();
-
-        });
-    });
-
-    document.getElementById("num-circles").value = numCircles;
-    const numCirclesInput = document.getElementById("num-circles");
-    numCirclesInput.addEventListener("input", function () {
-        numCircles = parseInt(this.value);
-
-        while (circles.length < numCircles) {
-            let cx_initial = getRandom(0, width)
-            let cy_initial = getRandom(0, height)
-            createCircles(cx_initial, cy_initial)
-        }
-        while (circles.length > numCircles) {
-            let i = circles.length - 1;
-            const { circle } = circles[i];
-            foreground.removeChild(circle);
-            circles.splice(i, 1);
-        }
-    });
-
-    const numLinesInput = document.getElementById("num-lines");
-    document.getElementById("num-lines").value = numLines;
-    numLinesInput.addEventListener("input", function () {
-        numLines = parseInt(this.value);
-
-        while (lines.length < numLines) {
-            createLine()
-        }
-        while (lines.length > numLines) {
-            let i = lines.length - 1;
-            // const { line } = lines[i];
-            background.removeChild(lines[i]);
-            lines.splice(i, 1);
-        }
-    });
-
-    const numRegionsInput = document.getElementById("num-regions");
-    document.getElementById("num-regions").value = numRegions;
-    numRegionsInput.addEventListener("input", function () {
-        numRegions = parseInt(this.value);
-
-        while (regions.length < numRegions) {
-            createPath()
-        }
-        while (regions.length > numRegions) {
-            let i = regions.length - 1;
-            background.removeChild(regions[i]);
-            regions.splice(i, 1);
-        }
-    });
-
-    // Add this function to randomly assign colors from the color pairs list
-    function assignRandomColorPair() {
-        const colorPairIndex = Math.floor(Math.random() * colors.length);
-        var [color1, color2] = colors[colorPairIndex];
-
-        if (Math.random() > 0.5) {
-            let temp = color1;
-            color1 = color2;
-            color2 = temp;
-        }
-
-        document.getElementById("color-white").value = color1;
-        document.getElementById("color-black").value = color2;
-
-        applyColorPair(color1, color2);
-    }
-
-    // Add this function to apply the selected color pair to the page
-    function applyColorPair(color1, color2) {
-        var feFuncR = document.querySelector("feFuncR");
-        var feFuncG = document.querySelector("feFuncG");
-        var feFuncB = document.querySelector("feFuncB");
-
-        var colorValues = [color1, color2];
-
-        colorValues.forEach((colorValue, index) => {
-            var redDecimal = hexToDecimal(colorValue.substring(1, 3));
-            var greenDecimal = hexToDecimal(colorValue.substring(3, 5));
-            var blueDecimal = hexToDecimal(colorValue.substring(5, 7));
-
-            var redTableValue = decimalToTableValues(redDecimal);
-            var greenTableValue = decimalToTableValues(greenDecimal);
-            var blueTableValue = decimalToTableValues(blueDecimal);
-
-            if (index === 0) {
-                setFirstTableValue(feFuncR, redTableValue);
-                setFirstTableValue(feFuncG, greenTableValue);
-                setFirstTableValue(feFuncB, blueTableValue);
-            } else {
-                setSecondTableValue(feFuncR, redTableValue);
-                setSecondTableValue(feFuncG, greenTableValue);
-                setSecondTableValue(feFuncB, blueTableValue);
-            }
-        });
-    }
-
-    // Add event listener to the new button
-    document.getElementById("random-color-pair").addEventListener("click", function () {
-        assignRandomColorPair();
-    });
-</script>
+<script src="scripts/animation.js"></script>
+<script src="scripts/colors.js"></script>
+<script src="scripts/listeners.js"></script>
