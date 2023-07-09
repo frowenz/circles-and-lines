@@ -15,5 +15,5 @@
 This project was inspired by [36 Points](https://www.sagejenson.com/36points) by Sage Jensen and by this piece, Eye Candy, by Bruce Gray:
 
 <p align="center">
-    <img src="examples/eye_candy.jpg" alt="Eye Candy" width="400"/>
+    <img src="images/eye_candy.jpg" alt="Eye Candy" width="400"/>
 </p>
